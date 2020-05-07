@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-2)]
 public class CameraController : MonoBehaviour
 {
 

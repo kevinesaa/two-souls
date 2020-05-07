@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[DefaultExecutionOrder(-1)]
 public class PlayerInput : MonoBehaviour
 {
     public Slider sliderMaxThrowForce;
@@ -24,6 +25,14 @@ public class PlayerInput : MonoBehaviour
 
     private AllPlayer player;
     private float horizontalInput;
+    private bool jumpDonwInput;
+    private bool jumpUpInput;
+    private bool changePlayerInput;
+    private bool unionPlayersInput;
+    private bool calculateThrowInput;
+    private bool stopCalculateThrowInput;
+    private bool throwInput;
+    
 
     private void initEditorControllers() {
 
@@ -97,42 +106,48 @@ public class PlayerInput : MonoBehaviour
         DrawDistance();
 
         horizontalInput = Input.GetAxis("Horizontal");
+        jumpDonwInput = Input.GetButtonDown("Jump");
+        jumpUpInput = Input.GetButtonUp("Jump");
+        changePlayerInput = Input.GetButtonDown("ChangePlayer");
+        unionPlayersInput = Input.GetButtonDown("Fire2");
+        calculateThrowInput = Input.GetButton("Fire2");
+        stopCalculateThrowInput = Input.GetButtonUp("Fire2");
+        throwInput = Input.GetButtonDown("Fire1");
+
         player.Move(horizontalInput);
-        
-        if (Input.GetButtonDown("Jump")) 
+        if (jumpDonwInput)
         {
             player.Jump();
         }
 
-        if (Input.GetButtonUp("Jump"))
+        if (jumpUpInput)
         {
             player.JumpRelease();
         }
-
+        
         if (player.IsSeparate)
         {
             player.HideThrowPoint();
-
-            if (Input.GetButtonDown("ChangePlayer")) 
+            if (changePlayerInput)
             {
                 CameraController.INSTANCE.Target = player.ChangeCharacter().transform;
             }
 
             //union
-            if (Input.GetButtonDown("Fire2"))
+            if (unionPlayersInput)
             {
                 player.Link();
                 CameraController.INSTANCE.Target = body.transform;
             }
         }
-        else
+        else 
         {
             //intenta separarse
-            if (Input.GetButton("Fire2"))
+            if (calculateThrowInput)
             {
                 //remove
                 sliderFinalThrowForce.value = soul.throwForce;
-                texFinalThrowForce.text =""+ soul.throwForce;
+                texFinalThrowForce.text = "" + soul.throwForce;
                 player.IncrementThrowForce();
                 texFinalThrowForce.text = "" + soul.throwForce;
                 //remove
@@ -141,8 +156,8 @@ public class PlayerInput : MonoBehaviour
 
                 player.CalculateScreenPositionForThrowSoul(Camera.main);
                 player.ShowThrowDirection(InputPositionForThrowSoul());
-                
-                if (Input.GetButtonDown("Fire1"))
+
+                if (throwInput)
                 {
                     CameraController.INSTANCE.Target = soul.transform;
                     player.ThrowSoul(InputPositionForThrowSoul());
@@ -150,14 +165,12 @@ public class PlayerInput : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonUp("Fire2"))
+            if (stopCalculateThrowInput)
             {
                 player.ResetThrowForece();
                 player.HideThrowPoint();
             }
         }
-
-        
     }
 
     private Vector3 InputPositionForThrowSoul() 
