@@ -5989,7 +5989,7 @@ MonoBehaviour:
   aditiveForcePerSecond: 4.5
   throwForce: 0
   initialThrowingTime: 0.09
-  airTimeBeforeGravity: 0.4
+  airTimeBeforeGravity: 0.35
   aditiveSoulGravityScalePerSecond: 0.6
   initialSoulGravityScale: 0
 --- !u!1 &1238297949
