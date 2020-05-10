@@ -2857,7 +2857,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetWidth: 1366
   targetHeight: 768
-  pixelsToUnits: 50
+  pixelsToUnits: 45
 --- !u!1 &539268335
 GameObject:
   m_ObjectHideFlags: 0
@@ -5309,19 +5309,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f62f21bdb0c6dd48b6e36dccd6ac0e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundDistance: 0.1
-  maxFallVelocity: 30
+  initialJumpSpeed: 0.005
+  holdJumpSpeed: 4
+  maxJumpDistance: 2
+  maxJumpTime: 0.6
   maxCoyeteTime: 0.05
-  horizontalSpeed: 2
-  jumpForce: 4
-  jumpHoldForce: 6.2
-  maxJumpTime: 0.8
-  linkDistance: 6
+  groundDistance: 0.1
+  fallingMultiply: 1.5
+  maxFallVelocity: 30
   layerGround:
     serializedVersion: 2
     m_Bits: 512
   transfromGroundLeftCheck: {fileID: 786270578}
   transfromGroundRightCheck: {fileID: 139271600}
+  horizontalSpeed: 3
+  linkDistance: 6
 --- !u!1 &1131737997
 GameObject:
   m_ObjectHideFlags: 0
@@ -5966,26 +5968,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35a50d1e39e96de42a2e92806a32b8f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundDistance: 0.1
-  maxFallVelocity: 30
+  initialJumpSpeed: 0.005
+  holdJumpSpeed: 4
+  maxJumpDistance: 2
+  maxJumpTime: 0.6
   maxCoyeteTime: 0.05
-  horizontalSpeed: 2
-  jumpForce: 4
-  jumpHoldForce: 6.2
-  maxJumpTime: 0.8
-  linkDistance: 6
+  groundDistance: 0.1
+  fallingMultiply: 1.5
+  maxFallVelocity: 30
   layerGround:
     serializedVersion: 2
     m_Bits: 512
   transfromGroundLeftCheck: {fileID: 1495749576}
   transfromGroundRightCheck: {fileID: 463452857}
+  horizontalSpeed: 3
+  linkDistance: 6
   defaultLookGrade: -90
   maxDegreRotatePerFrame: 5
   maxForceSoulThrow: 10
-  aditiveForcePerSecond: 4
+  aditiveForcePerSecond: 4.5
   throwForce: 0
   initialThrowingTime: 0.09
-  airTimeBeforeGravity: 5
+  airTimeBeforeGravity: 0.4
   aditiveSoulGravityScalePerSecond: 0.6
   initialSoulGravityScale: 0
 --- !u!1 &1238297949
@@ -7999,7 +8003,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1598774757}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.77, y: 0, z: 0}
+  m_LocalPosition: {x: -9.98, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1129637980}

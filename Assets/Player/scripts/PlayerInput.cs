@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[DefaultExecutionOrder(-1)]
+
 public class PlayerInput : MonoBehaviour
 {
     public Slider sliderMaxThrowForce;
@@ -25,7 +25,7 @@ public class PlayerInput : MonoBehaviour
 
     private AllPlayer player;
     private float horizontalInput;
-    private bool jumpDonwInput;
+    private bool jumpDownInput;
     private bool jumpUpInput;
     private bool changePlayerInput;
     private bool unionPlayersInput;
@@ -106,7 +106,7 @@ public class PlayerInput : MonoBehaviour
         DrawDistance();
 
         horizontalInput = Input.GetAxis("Horizontal");
-        jumpDonwInput = Input.GetButtonDown("Jump");
+        jumpDownInput = Input.GetButtonDown("Jump");
         jumpUpInput = Input.GetButtonUp("Jump");
         changePlayerInput = Input.GetButtonDown("ChangePlayer");
         unionPlayersInput = Input.GetButtonDown("Fire2");
@@ -115,7 +115,7 @@ public class PlayerInput : MonoBehaviour
         throwInput = Input.GetButtonDown("Fire1");
 
         player.Move(horizontalInput);
-        if (jumpDonwInput)
+        if (jumpDownInput)
         {
             player.Jump();
         }

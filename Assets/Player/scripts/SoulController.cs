@@ -5,20 +5,23 @@ using UnityEngine;
 
 public class SoulController : PlayerController
 {
-
+    [Header("Throw angle")]
     public float defaultLookGrade = -90;
     public float maxDegreRotatePerFrame = 5;
 
+    [Header("Before throw moment")]
     //before throw moment
     public float maxForceSoulThrow = 10;
     public float aditiveForcePerSecond = 0.1f;
     public float throwForce;
 
+    [Header("up throw moment")]
     //up moment
     public float initialThrowingTime = 0.09f;
     public float airTimeBeforeGravity = 1;
     float throwingTime;
-    
+
+    [Header("down throw moment")]
     //down moment
     public float aditiveSoulGravityScalePerSecond = 0.2f;
     public float initialSoulGravityScale;
@@ -79,18 +82,6 @@ public class SoulController : PlayerController
         {
             base.Walk(horizontalSpeedInput);
         }
-        else
-        {
-            if (horizontalSpeedInput < (-0.01f) || horizontalSpeedInput > 0.01f)
-            {
-                Vector2 velocity = mRigidbody.velocity;
-                float x = 0.2f * this.horizontalSpeed;
-                horizontalSpeedInput = x * Mathf.Clamp(horizontalSpeedInput, -1, 1);
-                horizontalSpeedInput = Mathf.Clamp(horizontalSpeedInput, -x, x);
-                velocity.x = velocity.x + horizontalSpeedInput;
-                mRigidbody.velocity = velocity;
-            }
-        }
     }
 
     public override void Jump()
@@ -143,5 +134,13 @@ public class SoulController : PlayerController
         body.transform.position = transform.position;
     }
 
-    
+    protected override void HoldJump()
+    {
+        if (!isThrowing)
+        {
+            base.HoldJump();
+        }
+    }
+
+
 }

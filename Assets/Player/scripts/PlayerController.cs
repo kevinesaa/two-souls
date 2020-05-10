@@ -3,22 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-1)]
 public abstract class PlayerController : MonoBehaviour
 {
-
-    public float groundDistance = 0.1f;
-    public float maxFallVelocity = 30;
+    [Header("jump params")]
+    public float initialJumpSpeed = 15f;
+    public float holdJumpSpeed = 5f;
+    public float maxJumpDistance = 3f;
+    public float maxJumpTime = 0.6f;
     public float maxCoyeteTime = 0.05f;
-    public float horizontalSpeed = 2;
-    public float jumpForce = 3f;
-    public float jumpHoldForce = 5f;
-    public float maxJumpTime= 0.6f;
-    public float linkDistance=6;
-
+    public float groundDistance = 0.1f;
+    public float fallingMultiply = 2f;
+    public float maxFallVelocity = 30;
+    
     public LayerMask layerGround;
     public Transform transfromGroundLeftCheck;
     public Transform transfromGroundRightCheck;
 
+    [Header("walk params")]
+    public float horizontalSpeed = 2;
+    public float linkDistance=6;
+
+   
     public static bool IsSeparate { get; protected set; }
     
     public float LinkDistanceSqrMagnitude { get; private set; }
@@ -27,7 +33,9 @@ public abstract class PlayerController : MonoBehaviour
 
     protected Rigidbody2D mRigidbody;
     private float coyoteTime;
+    private float jumpPosition;
     private float jumpTime;
+    private float initialGravityScale;
 
     public abstract PlayerController GetOtherPart();
 
@@ -36,6 +44,7 @@ public abstract class PlayerController : MonoBehaviour
         groundDistance = Mathf.Abs(groundDistance);
         maxFallVelocity = (-1) * Mathf.Abs(maxFallVelocity);
         mRigidbody = GetComponent<Rigidbody2D>();
+        initialGravityScale = mRigidbody.gravityScale;
         LinkDistanceSqrMagnitude = linkDistance * linkDistance;
     }
 
@@ -46,6 +55,9 @@ public abstract class PlayerController : MonoBehaviour
         RaycastHit2D groundRightCheckHit = Physics2D.Raycast(transfromGroundRightCheck.position, Vector2.down, groundDistance, layerGround);
         IsTouchingGround = (groundLeftCheckHit || groundRightCheckHit);
 
+        if (IsTouchingGround)
+            coyoteTime = Time.time + maxCoyeteTime;
+
         HoldJump();
         Vector2 velocity = mRigidbody.velocity;
         if (velocity.y < maxFallVelocity)
@@ -55,30 +67,29 @@ public abstract class PlayerController : MonoBehaviour
         }
     }
 
+    
+
     public virtual void Walk(float horizontalSpeedInput)
     {
         Vector2 velocity = mRigidbody.velocity;
         velocity.x = this.horizontalSpeed * Mathf.Clamp(horizontalSpeedInput, -1, 1);
         velocity.x = Mathf.Clamp(velocity.x, -this.horizontalSpeed, this.horizontalSpeed);
         mRigidbody.velocity = velocity;
-        if (IsTouchingGround)
-            coyoteTime = Time.time + maxCoyeteTime;
     }
 
     public virtual void Jump()
     {
         if (!IsJumping && (IsTouchingGround || coyoteTime > Time.time) )
         {
-            float gravityScale = mRigidbody.gravityScale;
-            Vector2 velocity = mRigidbody.velocity;
-            velocity.y = 0;
-            mRigidbody.velocity = velocity;
+            mRigidbody.gravityScale = 0;
             IsJumping = true;
-            jumpTime = 0;
             IsTouchingGround = false;
-            mRigidbody.AddForce(jumpForce * Vector2.up, ForceMode2D.Impulse);
+            jumpPosition = transform.localPosition.y + maxJumpDistance;
+            mRigidbody.velocity = mRigidbody.velocity.x * Vector2.right;
+            mRigidbody.velocity =  (initialJumpSpeed * Vector2.up);
+            jumpTime = Time.time + Time.deltaTime + maxJumpTime;
+            mRigidbody.gravityScale = 0;
             IsJumping = true;
-            jumpTime = 0;
             IsTouchingGround = false;
         }
     }
@@ -102,20 +113,23 @@ public abstract class PlayerController : MonoBehaviour
         return distanceVector.sqrMagnitude <= LinkDistanceSqrMagnitude;
     }
 
-    private void HoldJump()
+    protected virtual void HoldJump()
     {
-        if (jumpTime < maxJumpTime)
+        mRigidbody.gravityScale = initialGravityScale;
+        if ( mRigidbody.velocity.y > 0 &&  ((transform.position.y <= jumpPosition ) || (Time.time  <= jumpTime)))
         {
-            if (IsJumping) 
+            if (IsJumping)
             {
-               
-                mRigidbody.AddForce( jumpHoldForce * Vector2.up);
-                jumpTime += Time.deltaTime;
+                mRigidbody.gravityScale = initialGravityScale * (fallingMultiply / 2);
+                mRigidbody.velocity =  ( (holdJumpSpeed )* Vector2.up);
+
             }
         }
         else 
         {
             IsJumping = false;
+            if(!IsTouchingGround)
+                mRigidbody.gravityScale = initialGravityScale * (fallingMultiply);
         }
     }
 
